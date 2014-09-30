@@ -10,7 +10,7 @@ $reg="/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{6,12}$/";
 $regname="/^[0-9a-zA-Z]{2,15}$/";
 $regemail="/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/";
 $type = "U";
-$con = mysql_connect("localhost","root");
+$con = mysql_connect("localhost","webadmin","123");
 mysql_select_db("filerepository", $con);
 $query = "SELECT * FROM usertable where username='$name'";
     $result = mysql_query($query, $con);
@@ -59,7 +59,7 @@ function loginUser($user,$pass){
 	$exist='';
 	$errorText='';
 	
-	$con = mysql_connect("localhost","root");
+	$con = mysql_connect("localhost","webadmin","123");
     mysql_select_db("filerepository", $con);
     $query = "SELECT * FROM usertable where username='$user'";
     $result = mysql_query($query, $con);
@@ -91,44 +91,6 @@ function loginUser($user,$pass){
 	return $errorText;	
 }
 
-function loginAdmin($user,$pass){
-	$errorname = '';
-	$errorpass ='';
-	$validAdmin = false;
-	$exist='';
-	$errorText='';
-	
-	$con = mysql_connect("localhost","root");
-    mysql_select_db("redphant", $con);
-    $query = "SELECT * FROM admin where name='$user'";
-    $result = mysql_query($query, $con);
-	// Check user existance	
-	if (mysql_num_rows($result) != 0) 
-	  {
-	  $exist=true;
-	  $row = mysql_fetch_row($result);
-	  if ($row[1]==$pass)
-      {
-	  $_SESSION['AdminName'] = $user;
-	 
-	  $validAdmin= true;
-	  }
-	  else
-	  {
-	  $errorpass=true;
-	  }
-	  }
-	  else {
-	  $exist=false;
-	  $errorname=true;
-	}
-	if ($errorname==true) $errorText = "Username does not exist";
-	else if ($errorpass==true) $errorText = "Wrong password";
-
-    if ($validAdmin == true) $_SESSION['validAdmin'] = true;
-	mysql_close($con);
-	return $errorText;	
-}
 
 function logoutUser(){
 	unset($_SESSION['validUser']);
@@ -137,53 +99,5 @@ function logoutUser(){
 }
 
 
-function checkUser(){
-	
-if ((!isset($_SESSION['validUser'])) || ($_SESSION['validUser'] != true))
-{
-		
-echo "hello strange";
-}
 
-if ((!isset($_SESSION['validUser'])) || ($_SESSION['validUser'] != true))
-{
-		
-header('Location: login.php');
-	
-}
-}
-
-function checkout($address,$tel,$type,$cardNo,$expire,$name,$username){
-$errorText = '';
-$regtel="/^\d{8,14}$/";
-    $con = mysql_connect("localhost","root");
-    mysql_select_db("redphant", $con);
-    $query = "UPDATE users SET address = '$address', tel = '$tel'
-WHERE username = '$username'";
-    $result = mysql_query($query, $con);
-	
-if ($address=="")
-{
-$errorText = "Must fill address";
-} else
-if (!preg_match($regtel,$tel))
-{
-$errorText = "Tel No. must be 8-14 digits,no hyphen or other token";
-} else
-if (!preg_match("/[VISA]|[MASTERCARD]/",$type))
-{
-$errorText = "Must fill VISA or MASTERCARD,ps.all should be uppercase";
-} else
-if ($cardNo==""){
-$errorText = "Must fill Card No";
-} else
-if (!preg_match("/^(0[1-9]\/201[3-9])|(1[0-2]\/201[3-9])$/",$expire)){
-$errorText = "Format should be mm/yyyy,year must be 2013-2019";
-} else
-if (!preg_match("/^[A-Z][a-zA-Z]+$/", $name) )
-{
-$errorText = "First letter must be uppercase and all be letters,no space";
-}
-return $errorText;
-}
 ?>
