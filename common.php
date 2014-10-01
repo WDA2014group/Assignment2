@@ -1,5 +1,5 @@
 <?php
-
+require('dbcon.php');
 
 session_start();
 
@@ -10,10 +10,10 @@ $reg="/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{6,12}$/";
 $regname="/^[0-9a-zA-Z]{2,15}$/";
 $regemail="/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/";
 $type = "U";
-$con = mysql_connect("localhost","webadmin","123");
-mysql_select_db("filerepository", $con);
+
 $query = "SELECT * FROM usertable where username='$name'";
-    $result = mysql_query($query, $con);
+    $result = $pdo->prepare($query);
+        $result->execute();
 	
 if (mysql_num_rows($result) != 0) 
 	$taken=true;
@@ -40,7 +40,8 @@ $errorText = "Email address is invalid";
 if ($errorText == '')
 {
 $query = "insert into usertable values('$name','$pw','$email','$type')";
-    $result = mysql_query($query, $con);
+    $results = $pdo->prepare($query);
+        $results->execute();
 }
 mysql_close($con);
 return $errorText;
