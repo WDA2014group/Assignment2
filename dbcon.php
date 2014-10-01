@@ -1,3 +1,7 @@
 <?php
-mysql_select_db('filerepository',mysql_connect('localhost','webadmin','123'))or die(mysql_error());
+
+
+$pdo=new PDO("mysql:dbname=".DB_NAME.";host=".DB_HOST,DB_USER,DB_PW);
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
 ?>
