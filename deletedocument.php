@@ -33,13 +33,16 @@ session_start();
 							<?php 
 							if (isset($_SESSION['userType'])) {
 							if($_SESSION['userType']=="U"){
-							$query=mysql_query("select * from filetable where permission='U'")or die(mysql_error());}
+							$query="select * from filetable where permission='U'";}
 							else if($_SESSION['userType']=="S"){
-							$query=mysql_query("select * from filetable where permission='U' or permission='S'")or die(mysql_error());}
+							$query="select * from filetable where permission='U' or permission='S'";}
 							else
-                            $query=mysql_query("select * from filetable ")or die(mysql_error());
+                            $query="select * from filetable ";
 							}
-							while($row=mysql_fetch_array($query)){
+							
+							$result=$pdo->prepare($query);
+							$result->excute();
+							while($row=$result->fetch(PDO::FETCH_ASSOC)){
 							$id=$row['filename'];
 							?>
                               
